@@ -4,7 +4,7 @@ set -euo pipefail
 check_awscli() {
     if ! command -v aws &> /dev/null; then
         echo "AWS CLI is not installed. Please install it first." >&2
-        exit 1
+	return 1
     fi
 }
 
@@ -70,16 +70,18 @@ create_ec2_instance() {
 }
 
 main() {
-    check_awscli || install_awscli
+    if ! check_awscli ; then
+	    install_awscli || exit 1
+    fi
 
     echo "Creating EC2 instance..."
 
     # Specify the parameters for creating the EC2 instance
-    AMI_ID=""
+    AMI_ID="ami-00bb6a80f01f03502"
     INSTANCE_TYPE="t2.micro"
-    KEY_NAME=""
-    SUBNET_ID=""
-    SECURITY_GROUP_IDS=""  # Add your security group IDs separated by space
+    KEY_NAME="2ndkey"
+    SUBNET_ID="subnet-0218fe628c9f0d196"
+    SECURITY_GROUP_IDS="sg-02e4cd96235380820"  # Add your security group IDs separated by space
     INSTANCE_NAME="Shell-Script-EC2-Demo"
 
     # Call the function to create the EC2 instance
